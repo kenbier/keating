@@ -77,6 +77,10 @@ def serve(path):
     else:
         return send_from_directory(app.template_folder, 'index.html')
 
+@app.route('/health')
+def health_check():
+    return 'OK', 200
+
 @app.route('/grade', methods=['POST'])
 # @limiter.limit("10 per hour")
 def grade():

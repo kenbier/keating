@@ -126,6 +126,4 @@ def grade_text(question_type, question, essay, test_type="IELTS"):
 if __name__ == "__main__":
     app_host = os.getenv('FLASK_RUN_HOST')
     app_port = os.getenv('FLASK_RUN_PORT')
-    print(app_host)
-    print(app_port)
     app.run(host=app_host, port=app_port)

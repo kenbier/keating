@@ -6,6 +6,7 @@ set -e
 # Optionally, print commands and their arguments as they are executed
 set -x
 
+source backend/.env.production
 source .secret.production
 
 # Navigate to the Flask app directory

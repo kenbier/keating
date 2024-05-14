@@ -22,21 +22,12 @@ def load_env(dotenv_file):
     dotenv_path = os.path.join(os.path.dirname(__file__), dotenv_file)
     load_dotenv(dotenv_path)
 
-## TODO remove most of this to build.sh, run.sh, and package.json for dev
-## dev env should be loaded ahead of time
-
 ## Load the dev env from the file system if we are in dev mode
 env_config = os.getenv('FLASK_ENV', 'development')  # Default to 'development' if not specified
 if env_config == 'development':
     configure_logging("development")    
-    app.logger.info("loading dev env")
-    dotenv_file = '.env.development'
-    load_dotenv(dotenv_file)
 else:
     configure_logging("production")    
-    app.logger.info("loading production env")
-    dotenv_file = '.env.production'
-    load_dotenv(dotenv_file)
     
 ## Setup the app with middleware
 # tool = language_tool_python.LanguageTool('en-US')

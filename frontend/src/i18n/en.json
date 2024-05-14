@@ -1,0 +1,11 @@
+{
+    "common": {
+      "title": "My React App",
+      "welcome": "Welcome to our application!"
+    },
+    "about": {
+      "title": "About Us",
+      "text": "We are a team of passionate developers building innovative web applications."
+    }
+  }
+  

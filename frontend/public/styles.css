@@ -1,0 +1,106 @@
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+.output {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #e9e9e9;
+    border-left: 5px solid #5C67F2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .container {
+        width: 100%;
+    }
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the content vertically and horizontally */
+    height: 100vh; /* Full viewport height */
+}
+
+
+.text-input {
+    width: calc(100% - 240px); /* Adjust width to leave space for the button */
+    height: 50vh; /* As previously set, 75% of the viewport height */
+    padding: 10px;
+    margin-right: 20px; /* Space between the text box and the button */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none; /* Prevent resizing */
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    padding: 20px;
+}
+
+input[type="text"], textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Includes padding and border in the element's width */
+}
+
+
+.container {
+    width: 100%; /* Use the full width of the viewport */
+    max-width: 960px; /* Maximum width of the form container */
+    margin: 0 auto; /* Center the container on the page */
+    padding: 20px;
+    box-sizing: border-box; /* Includes padding in width calculations */
+}
+
+.form-group {
+    margin-bottom: 20px; /* Increase space between form groups for clarity */
+}
+
+input[type="text"], textarea, select {
+    width: 100%; /* Full width to maximize use of space */
+    height: 50px; /* Set a fixed height for input and select */
+    padding: 12px 20px; /* Increase padding for better readability */
+    font-size: 18px; /* Increase font size for better visibility */
+    border: 2px solid #ccc; /* Make borders thicker */
+    border-radius: 8px; /* Increase border-radius for a smoother look */
+    box-sizing: border-box; /* Includes padding and border in the element's width and height */
+}
+
+textarea {
+    height: 300px; /* Increase the height of the textarea */
+}
+
+.submit-btn {
+    padding: 15px 30px; /* Increase padding for a larger button */
+    font-size: 20px; /* Increase font size for visibility */
+    background-color: #5C67F2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: block; /* Full-width button */
+    width: 100%; /* Maximize width */
+    margin-top: 10px; /* Space above the button */
+}
+
+.submit-btn:hover {
+    background-color: #45a049; /* Darker on hover for interaction feedback */
+}

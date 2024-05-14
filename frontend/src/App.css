@@ -1,0 +1,194 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loading-spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Basic reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+}
+
+.output {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #e9e9e9;
+  border-left: 5px solid #5C67F2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 12 00px) {
+  .container {
+      width: 100%;
+  }
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers the content vertically and horizontally */
+  height: 100vh; /* Full viewport height */
+}
+
+
+.text-input {
+  width: calc(100% - 240px); /* Adjust width to leave space for the button */
+  height: 50vh; /* As previously set, 75% of the viewport height */
+  padding: 10px;
+  margin-right: 20px; /* Space between the text box and the button */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none; /* Prevent resizing */
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px; /* Space between each form group */
+}
+
+
+
+.container {
+  width: 100%; /* Use the full width of the viewport */
+  max-width: 960px; /* Maximum width of the form container */
+  margin: 0 auto; /* Center the container on the page */
+  padding: 20px;
+  box-sizing: border-box; /* Includes padding in width calculations */
+}
+
+.form-group {
+  margin-bottom: 20px; /* Increase space between form groups for clarity */
+}
+
+input[type="text"], textarea, select {
+  width: 100%; /* Full width to maximize use of space */
+  height: 50px; /* Set a fixed height for input and select */
+  padding: 12px 20px; /* Increase padding for better readability */
+  font-size: 18px; /* Increase font size for better visibility */
+  border: 2px solid #ccc; /* Make borders thicker */
+  border-radius: 8px; /* Increase border-radius for a smoother look */
+  box-sizing: border-box; /* Includes padding and border in the element's width and height */
+}
+
+textarea {
+  height: 300px; /* Increase the height of the textarea */
+}
+
+.submit-btn {
+  padding: 15px 30px; /* Increase padding for a larger button */
+  font-size: 20px; /* Increase font size for visibility */
+  background-color: #5C67F2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: block; /* Full-width button */
+  width: 100%; /* Maximize width */
+  margin-top: 10px; /* Space above the button */
+}
+
+.submit-btn:hover {
+  background-color: #45a049; /* Darker on hover for interaction feedback */
+}
+
+/* In your styles.css */
+.not-found-container {
+  text-align: center;
+  padding: 50px;
+}
+
+.back-home-link {
+  text-decoration: none;
+  color: blue;
+}
+
+input[type="text"], textarea, select {
+  width: 100%; /* Full width to maximize use of space */
+  padding: 12px 20px; /* Increase padding for better readability */
+  margin-top: 6px; /* Uniform margin for all input types */
+  font-size: 18px; /* Uniform font size for better visibility */
+  border: 2px solid #ccc; /* Uniform thicker borders */
+  border-radius: 8px; /* Uniform border-radius for a smoother look */
+  box-sizing: border-box; /* Includes padding and border in the element's width and height */
+}
+textarea {
+  height: 300px; /* Specific height for textarea */
+}
+
+#root {
+  width: 100vw;  /* Fills the entire viewport width */
+  /* Alternatively, use pixels or other units */
+  /* width: 800px; */
+}
+
+pre {
+  font-family: Arial, sans-serif;
+}

@@ -15,6 +15,5 @@ def apply_snake_case_middleware(app):
         if request.is_json:
             # Convert request JSON data to snake_case
             data = request.get_json()
-            print(convert_keys_to_snake(data))
             g.json_data = convert_keys_to_snake(data)
 

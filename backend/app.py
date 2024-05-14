@@ -8,19 +8,36 @@ import os
 import constants as constants
 from middleware import apply_snake_case_middleware
 from util import system_message, generate_user_message_for_grading, current_model
+import logging
+
+app = Flask(__name__, static_folder='frontend/build/static', template_folder='frontend/build')
 
 # import language_tool_python
+
+def configure_logging(level):
+    logging_level = logging.DEBUG if level == "development" else logging.WARNING
+    logging.basicConfig(level=logging_level, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def load_env(dot_env_file):
+    dotenv_path = os.path.join(os.path.dirname(__file__), dotenv_file)
+    print(dotenv_path)
+    load_dotenv()
 
 ## Load the dev env from the file system if we are in dev mode
 env_config = os.getenv('FLASK_ENV', 'development')  # Default to 'development' if not specified
 if env_config == 'development':
-    print("loading dev env")
-    dotenv_path = '.env.development'
-load_dotenv()
-
+    configure_logging("development")    
+    app.logger.info("loading dev env")
+    dotenv_file = '.env.development'
+    load_dotenv(dotenv_file)
+else:
+    configure_logging("production")    
+    app.logger.info("loading production env")
+    dotenv_file = '.env.production'
+    load_dotenv(dotenv_file)
+    
 ## Setup the app with middleware
 # tool = language_tool_python.LanguageTool('en-US')
-app = Flask(__name__, static_folder='frontend/build/static', template_folder='frontend/build')
 apply_snake_case_middleware(app)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 if not OPENAI_API_KEY:
@@ -29,15 +46,15 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 if os.getenv('FLASK_ENV') == 'development':
     # Enable CORS only for development mode
-    print("dev mode enabled")
-    CORS(app, supports_credentials=True)
+    app.logger.info("dev mode enabled")
+    CORS(app)
 else:
     # Configure other settings for production mode if needed
-    print("prod mode enabled")
+    app.logger.info("prod mode enabled")
     limiter = Limiter(
         app,
         key_func=get_remote_address,
-        default_limits=["100 per day", "10 per hour"]
+        default_limits=["250 per day", "100 per hour"]
     )
 
 def ask_openai(messages):
@@ -63,8 +80,6 @@ def serve(path):
 @app.route('/grade', methods=['POST'])
 # @limiter.limit("10 per hour")
 def grade():
-    print("foo")
-    print(request.headers)
     data = g.json_data
     essay = data['essay']
     question_type = data['question_type']
@@ -105,6 +120,8 @@ def grade_text(question_type, question, essay, test_type="IELTS"):
 
 
 if __name__ == "__main__":
-    host = os.getenv('FLASH_RUN_HOST')
-    port = os.getenv('FLASH_RUN_PORT')
-    app.run(host=host, port=port)
+    app_host = os.getenv('FLASK_RUN_HOST')
+    app_port = os.getenv('FLASK_RUN_PORT')
+    print(app_host)
+    print(app_port)
+    app.run(host=app_host, port=app_port)

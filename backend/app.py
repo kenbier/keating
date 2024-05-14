@@ -18,10 +18,12 @@ def configure_logging(level):
     logging_level = logging.DEBUG if level == "development" else logging.WARNING
     logging.basicConfig(level=logging_level, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def load_env(dot_env_file):
+def load_env(dotenv_file):
     dotenv_path = os.path.join(os.path.dirname(__file__), dotenv_file)
-    print(dotenv_path)
-    load_dotenv()
+    load_dotenv(dotenv_path)
+
+## TODO remove most of this to build.sh, run.sh, and package.json for dev
+## dev env should be loaded ahead of time
 
 ## Load the dev env from the file system if we are in dev mode
 env_config = os.getenv('FLASK_ENV', 'development')  # Default to 'development' if not specified

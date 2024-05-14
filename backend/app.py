@@ -14,20 +14,15 @@ app = Flask(__name__, static_folder='frontend/build/static', template_folder='fr
 
 # import language_tool_python
 
-def configure_logging(level):
-    logging_level = logging.DEBUG if level == "development" else logging.WARNING
+def configure_logging(logging_level):
     logging.basicConfig(level=logging_level, format='%(asctime)s - %(levelname)s - %(message)s')
-
-def load_env(dotenv_file):
-    dotenv_path = os.path.join(os.path.dirname(__file__), dotenv_file)
-    load_dotenv(dotenv_path)
 
 ## Load the dev env from the file system if we are in dev mode
 env_config = os.getenv('FLASK_ENV', 'development')  # Default to 'development' if not specified
 if env_config == 'development':
-    configure_logging("development")    
+    configure_logging(logging.DEBUG)    
 else:
-    configure_logging("production")    
+    configure_logging(logging.WARNING)    
     
 ## Setup the app with middleware
 # tool = language_tool_python.LanguageTool('en-US')
@@ -119,4 +114,6 @@ def grade_text(question_type, question, essay, test_type="IELTS"):
 if __name__ == "__main__":
     app_host = os.getenv('FLASK_RUN_HOST')
     app_port = os.getenv('FLASK_RUN_PORT')
+    print(app_host)
+    print(app_port)
     app.run(host=app_host, port=app_port)

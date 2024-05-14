@@ -6,6 +6,7 @@ set -e
 # Optionally, print commands and their arguments as they are executed
 set -x
 
+export FLASK_ENV=production
 source backend/.env.production
 source .secret.production
 

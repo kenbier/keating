@@ -24,7 +24,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start": "concurrently \"npm run start-flask\" \"npm run start-react\"",
-    "start-flask": "cd ../../ && ./run_dev.sh",
+    "start-flask": "cd ../ && ./run_dev.sh",
     "start-react": "react-scripts start"
   },
   "eslintConfig": {

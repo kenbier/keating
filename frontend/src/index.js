@@ -17,12 +17,15 @@ const StyledApp = styled.div`
 `;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const auth0_domain = `${process.env.REACT_APP_AUTH0_DOMAIN}`;
+const auth0_client_id = `${process.env.REACT_APP_AUTH0_CLIENT_ID}`;
+
 root.render(
   <StyledApp>
   <React.StrictMode>
     <Auth0Provider
-      domain="dev-ir54umvd872a1bk3.us.auth0.com" // Replace with your Auth0 domain
-      clientId="AP76dkGbHtjYSIL12IBawwR7WDLF3WRZ" // Replace with your Auth0 client ID
+      domain={auth0_domain} 
+      clientId={auth0_client_id} 
       redirectUri={window.location.origin}
     >
       <App />

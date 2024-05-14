@@ -9,7 +9,7 @@ const LoginPage = () => {
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <img src={logo} alt="React Logo" style={{ width: '100px', margin: '20px auto' }} />
+      <img src={logo} alt="Keating Logo" style={{ width: '100px', margin: '20px auto' }} />
       <h1>Welcome to Keating AI</h1>
       <button 
         onClick={loginWithRedirect} 

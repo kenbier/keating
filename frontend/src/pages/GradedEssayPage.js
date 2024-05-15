@@ -11,6 +11,12 @@ const Container = styled.div`
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  padding: 20px; /* Add padding around the content */
+  max-height: 80vh; /* Set maximum height to 100% of the viewport height */
+  overflow-y: auto; /* Enable scrolling inside the container if content overflows */
+  margin-top: 60px; /* Add space on the top to avoid overlap with the header */
+
 `;
 
 const Section = styled.div`
@@ -45,6 +51,8 @@ const Button = styled.button`
   cursor: pointer;
   font-size: 16px;
   margin-top: 20px;
+  margin: 20px auto;
+  display: block;
   &:hover {
     background-color: #4b55c3;
   }
@@ -70,6 +78,7 @@ const GradedEssayPage = ({ gradedEssay }) => {
   }
 
   return (
+    <div>
     <Container>
       <Section>
         <SectionTitle>Score</SectionTitle>
@@ -81,8 +90,9 @@ const GradedEssayPage = ({ gradedEssay }) => {
         <TextDiv><pre>{gradedEssay.questions}</pre></TextDiv>
       </Section>
 
-      <Button onClick={handleTryAgain}>Try Again</Button>
     </Container>
+    <Button onClick={handleTryAgain}>Try Again</Button>
+    </div>
   );
 };
 

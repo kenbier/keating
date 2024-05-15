@@ -1,4 +1,6 @@
 import re
+import os
+import logging 
 
 def camel_to_snake(name):
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
@@ -25,3 +27,12 @@ def generate_user_message_for_grading(test_type, question_type, question, essay)
 
 current_model = "ft:gpt-3.5-turbo-0125:personal::9ODUhuCx"
 ### current_model = "ft:gpt-3.5-turbo-0125:personal::9Lgy9k53"
+
+def is_prod():
+    return os.getenv('FLASK_ENV') == 'production'
+
+def is_dev():
+    return not is_prod()
+
+def configure_logging(logging_level):
+    logging.basicConfig(level=logging_level, format='%(asctime)s - %(levelname)s - %(message)s')

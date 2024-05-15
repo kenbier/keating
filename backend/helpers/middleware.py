@@ -1,5 +1,6 @@
 from flask import request, g
-from util import camel_to_snake
+from helpers.util import camel_to_snake, is_prod
+from functools import wraps
 
 def convert_keys_to_snake(data):
     if isinstance(data, dict):
@@ -17,3 +18,15 @@ def apply_snake_case_middleware(app):
             data = request.get_json()
             g.json_data = convert_keys_to_snake(data)
 
+def conditional_limiter(limiter, limit_value):
+    def decorator(f):
+        if is_prod():
+            # Apply the actual rate limiting in production
+            return limiter.limit(limit_value)(f)
+        else:
+            # Return the original function if not in production
+            @wraps(f)
+            def wrapped(*args, **kwargs):
+                return f(*args, **kwargs)
+            return wrapped
+    return decorator

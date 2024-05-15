@@ -13,7 +13,8 @@ source .secret.development > /dev/null 2>&1
 # Navigate to the Flask app directory
 cd backend
 
-python app.py 
+python -m flask run --reload
+
 
 echo "Flask app is running."
 

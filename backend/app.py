@@ -23,8 +23,8 @@ def create_app():
     template_folder='frontend/build'
 
     if is_prod():
-        static_folder='backend/build/static'
-        template_folder='backend/build'
+        static_folder='build/static'
+        template_folder='build'
 
     app = Flask(__name__, static_folder=static_folder, template_folder=template_folder)
 

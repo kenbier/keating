@@ -13,7 +13,7 @@ npm install || { echo 'npm install failed'; exit 1; }
 
 # Build the React app
 echo "Building React app..."
-npm run build || { echo 'npm run build failed'; exit 1; }
+NODE_ENV=production npm run build || { echo 'npm run build failed'; exit 1; }
 
 # Optionally, you can copy or move the build directory to the Flask app's static directory
 # echo "Moving build to Flask static directory..."

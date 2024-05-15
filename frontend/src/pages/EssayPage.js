@@ -4,6 +4,8 @@ import IELTSForm from '../components/IELTSForm';
 import styled from 'styled-components';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 
 // Container for the entire form
 const EssayFormContainer = styled.div`
@@ -17,7 +19,7 @@ const EssayFormContainer = styled.div`
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   height: 100%;  /* This ensures the form uses the entire height of its container */
-  
+
 `;
 
 // Label styling for form fields
@@ -55,9 +57,9 @@ const EssayPage = ({ onSuccess }) => {
     essay: `The comparison of standards of the cities and small town or villages has been always a debate. Recently, teenagers choose to live in the cities rather than their home villages because of school or job opportunities. This essay will discuss multiple reasons behind this trend and explain why the advantages of being in a city do indeed outweigh its drawbacks.
 
   There are several reasons to desire living in urban areas. Firstly, it gives people an opportunity to study in better schools which cannot be found in rural areas. Since in the modern world education means very much for people’s future, it is crucial to have higher education degrees for those individuals to find well-paid jobs. In addition to that, city life provides people with completely different experiences than their home villages. Thanks to the schools, work or social gathering places, they get to meet a greater number of people from all around the country compared to their rural towns which is crucial for one’s personal development. Lastly, in the cities, not only they get bigger number of job options, but also they can earn larger amount of money. It is very well know that job market is significantly limited in the villages also the current jobs barely pay enough.
-    
+
   It is clearly seen that benefits of leaving villages outweigh its few number of deficits. It is worth to mention that people face some issues, such as being away from their extended family, more competitive and challenging job market, and substantially more expensive living cost, when they move to the cities. Advantages like learning and exploring new experiences, getting a better education leading to a better paid job and having an interesting career, however, surpass the number of the drawbacks of this development.
-    
+
   To conclude, there are various reasons for young generation to leave their homes to live in the cities and this movement’s benefits easily outweigh its disadvantages.`
   });
 
@@ -78,23 +80,36 @@ const EssayPage = ({ onSuccess }) => {
 
     // Your form submission logic
     // Example: Fetch POST request to the backend with form data
-    fetch(apiUrl+"/grade", {
+    fetch(apiUrl + "/grade", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setIsLoading(false);
-        onSuccess(data);
-        navigate("/graded");
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        console.error('Error:', error);
+    .then((response) => {
+      if (!response.ok) {
+        // If the server response is not OK, throw an error with the status text
+        return response.json().then(err => {
+          throw new Error(err.message || `HTTP error: ${response.statusText}`);
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setIsLoading(false);
+      onSuccess(data);
+      navigate("/graded");
+    })
+    .catch((error) => {
+      setIsLoading(false);
+      // Display the error message via toast
+      toast.error(`Error: ${error.message}`, {
+        autoClose: 5000,
+        closeOnClick: true,
+        draggable: true,
       });
+    });
   };
 
   return (

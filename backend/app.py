@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory, g
+from flask import Flask, jsonify, send_from_directory, g, abort
 from dotenv import load_dotenv
 import os
 from routes.grade import grade_text
@@ -58,11 +58,6 @@ app = create_app()
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    app.logger.info("Requested path:", path)
-    full_path = os.path.join(app.static_folder, path)
-    app.logger.info("Full path:", full_path)
-    app.logger.info("Exists:", os.path.exists(full_path))
-
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
     else:
@@ -71,6 +66,16 @@ def serve(path):
 @app.route('/health')
 def health_check():
     return 'OK', 200
+
+@app.errorhandler(500)
+def handle_500(error):
+    print(500)
+    response = jsonify({
+        "error": "Internal Server Error",
+        "message": str(error)  # Including the error message if any
+    })
+    response.status_code = 500
+    return response
 
 @app.route('/grade', methods=['POST'])
 @conditional_limiter(app.limiter, "10 per hour")

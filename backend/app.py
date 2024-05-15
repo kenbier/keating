@@ -29,7 +29,7 @@ def grade():
     essay = data['essay']
     question_type = data['question_type']
     question = data['question']
-    
+
     responses = grade_text(app.openai_client, question_type, question_type, question, essay)
     if isinstance(responses, tuple):
         grade_response, questions_response = responses

@@ -1,18 +1,28 @@
 from openai import OpenAI
+from flask import Flask
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask import g
 import logging 
 import os
-from helpers.util import is_dev, configure_logging
+from helpers.util import is_dev, configure_logging, is_prod
 from helpers.middleware import apply_snake_case_middleware
 
-def load_app(app):
+def create_app():
     # import language_tool_python
  
     ## Setup the app with middleware
     # tool = language_tool_python.LanguageTool('en-US')
+
+    static_folder='frontend/build/static'
+    template_folder='frontend/build'
+
+    if is_prod():
+        static_folder='backend/build/static'
+        template_folder='backend/build'  
+
+    app = Flask(__name__, static_folder=static_folder, template_folder=template_folder)
 
     apply_snake_case_middleware(app)
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
@@ -35,3 +45,5 @@ def load_app(app):
     ## Add things to the app object
     app.openai_client = client
     app.limiter = limiter
+
+    return app

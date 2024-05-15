@@ -3,11 +3,10 @@ from dotenv import load_dotenv
 import os
 from helpers.middleware import conditional_limiter
 from routes.grade import grade_text
-from helpers.setup import load_app
+from helpers.setup import create_app
 
-app = Flask(__name__, static_folder='frontend/build/static', template_folder='frontend/build')
 load_dotenv()
-load_app(app)
+app = create_app()
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -22,6 +21,7 @@ def serve(path):
 @app.route('/health')
 def health_check():
     return 'OK', 200
+
 @app.route('/grade', methods=['POST'])
 @conditional_limiter(app.limiter, "10 per hour")
 def grade():

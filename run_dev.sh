@@ -8,12 +8,10 @@ set -x
 
 export FLASK_ENV=development
 source backend/.env.development
-source .secret.development
+source .secret.development > /dev/null 2>&1
 
 # Navigate to the Flask app directory
 cd backend
-
-echo "FLASK_ENV: $FLASK_RUN_HOST"
 
 python app.py 
 

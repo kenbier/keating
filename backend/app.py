@@ -11,6 +11,7 @@ from util import system_message, generate_user_message_for_grading, current_mode
 import logging
 
 app = Flask(__name__, static_folder='frontend/build/static', template_folder='frontend/build')
+load_dotenv()
 
 # import language_tool_python
 
@@ -23,7 +24,7 @@ if env_config == 'development':
     configure_logging(logging.DEBUG)    
 else:
     configure_logging(logging.WARNING)    
-    
+ 
 ## Setup the app with middleware
 # tool = language_tool_python.LanguageTool('en-US')
 apply_snake_case_middleware(app)
@@ -114,6 +115,4 @@ def grade_text(question_type, question, essay, test_type="IELTS"):
 if __name__ == "__main__":
     app_host = os.getenv('FLASK_RUN_HOST')
     app_port = os.getenv('FLASK_RUN_PORT')
-    print(app_host)
-    print(app_port)
     app.run(host=app_host, port=app_port)

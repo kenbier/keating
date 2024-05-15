@@ -8,7 +8,7 @@ set -x
 
 export FLASK_ENV=production
 source backend/.env.production
-source .secret.production
+source .secret.production > /dev/null 2>&1
 
 # Navigate to the Flask app directory
 cd backend

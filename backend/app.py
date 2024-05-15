@@ -11,8 +11,11 @@ app = create_app()
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if app.debug:
-        return "Running in development mode, please load React from the dev server"
+    print("Requested path:", path)
+    full_path = os.path.join(app.static_folder, path)
+    print("Full path:", full_path)
+    print("Exists:", os.path.exists(full_path))
+
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
     else:

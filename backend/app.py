@@ -11,10 +11,10 @@ app = create_app()
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    print("Requested path:", path)
+    app.logger.info("Requested path:", path)
     full_path = os.path.join(app.static_folder, path)
-    print("Full path:", full_path)
-    print("Exists:", os.path.exists(full_path))
+    app.logger.info("Full path:", full_path)
+    app.logger.info("Exists:", os.path.exists(full_path))
 
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)

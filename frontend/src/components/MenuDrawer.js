@@ -27,14 +27,14 @@ const LoginPage = () => {
     fontWeight: 'bold',
   }));
   return (
-    <div style={{ 
-      textAlign: 'center', 
-      // marginTop: '20px', 
-      // minHeight: '100vh', 
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: 'center', 
-      justifyContent: 'center', 
+    <div style={{
+      textAlign: 'center',
+      // marginTop: '20px',
+      // minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
       // padding: '20px'
     }}>
       <CssBaseline />
@@ -44,9 +44,9 @@ const LoginPage = () => {
         open={drawerOpen}
         onClose={toggleDrawer(false)}
         PaperProps={{
-          style: { 
+          style: {
             width: '240px',
-            background: 'linear-gradient(to right, #f2e8df, #f9f4e8)', 
+            background: 'linear-gradient(to right, #f2e8df, #f9f4e8)',
           }
         }}
       >

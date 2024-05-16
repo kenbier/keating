@@ -3,7 +3,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 const Header = ({toggleDrawer}) => {
   return (
-      <AppBar position="fixed" style={{ backgroundColor: '#779ECB' }}>
+      <AppBar position="fixed" onClick={toggleDrawer(true)} style={{ backgroundColor: '#779ECB' }}>
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
             <MenuIcon />

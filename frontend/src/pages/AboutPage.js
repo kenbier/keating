@@ -29,9 +29,8 @@ const About = () => {
     <Container>
       <Title>About</Title>
       <Content>
-        Welcome to our application! We aim to provide a seamless experience for users by offering grading
-        services with comprehensive feedback. Our team is passionate about helping you achieve your goals and
-        improve your skills. Thank you for being a part of our journey!
+        Keating is an AI that has been trained on over 50,000 graded IELTS essays.
+        It is still improving, but we hope we can help you on your language learning journey.
       </Content>
     </Container>
   );

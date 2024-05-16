@@ -49,7 +49,6 @@ def create_app():
     ## Add things to the app object
     app.openai_client = client
     app.limiter = limiter
-
     return app
 
 load_dotenv()
@@ -69,7 +68,6 @@ def health_check():
 
 @app.errorhandler(500)
 def handle_500(error):
-    print(500)
     response = jsonify({
         "error": "Internal Server Error",
         "message": str(error)  # Including the error message if any
@@ -91,7 +89,6 @@ def grade():
         return jsonify(score=grade_response, questions=questions_response)
     else:
         return jsonify(error=responses), 400
-
 
 if __name__ == "__main__":
     app_host = os.getenv('FLASK_RUN_HOST')

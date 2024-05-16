@@ -86,7 +86,7 @@ const GradedEssayPage = ({ gradedEssay }) => {
       </Section>
 
       <Section>
-        <SectionTitle>Questions</SectionTitle>
+        <SectionTitle> Sample edits and suggestions (Experimental)</SectionTitle>
         <TextDiv><pre>{gradedEssay.questions}</pre></TextDiv>
       </Section>
 

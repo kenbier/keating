@@ -33,7 +33,7 @@ const LoadingText = styled.p`
 const LoadingIndicator = () => (
   <LoadingContainer>
     <LoadingSpinner />
-    <LoadingText>Loading, please wait...</LoadingText>
+    <LoadingText>Loading, it can take up to a minute...</LoadingText>
   </LoadingContainer>
 );
 

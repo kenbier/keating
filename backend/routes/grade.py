@@ -1,5 +1,5 @@
 
-from helpers.util import system_message, generate_user_message_for_grading, current_model, is_dev, is_prod 
+from helpers.util import system_message, generate_user_message_for_grading, current_model, additional_feedback_message
 
 
 def ask_openai(client, messages):
@@ -20,14 +20,9 @@ def grade_text(client, question_type, question, essay, test_type="IELTS"):
             return response['error']
 
         grade_response = response.choices[0].message.content
-        messages.append({"role": "system", "content": grade_response})
-
-        messages.append({"role": "user", "content": "Provide grammar topics to study based on the essay the user submitted. \
-                     Next, print places in the essay with very obvious grammatical mistakes, and how to fix them. \
-                     Finally generate 5 basic multiple choice grammar questions based on the grammar topics you chose.\
-                     "})
+        messages.append({"role": "assistant", "content": grade_response})
+        messages.append(additional_feedback_message)
         response = ask_openai(client, messages)
-
         if 'error' in response:
             return response['error']
 

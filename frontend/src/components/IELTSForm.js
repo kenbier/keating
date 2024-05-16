@@ -63,7 +63,7 @@ const Button = styled.button`
   }
 `;
 
-const IELTSForm = ({ onInputChange, essayData, isLoading }) => {
+const IELTSForm = ({ onInputChange, essayData, canSubmit }) => {
   return (
     <>
       <Fieldset>
@@ -101,9 +101,8 @@ const IELTSForm = ({ onInputChange, essayData, isLoading }) => {
         />
       </Fieldset>
 
-      <Button type="submit" disabled={isLoading}>
-        {isLoading ? 'Submitting...' : 'Submit'}
-      </Button>
+
+      <Button type="submit" disabled={!canSubmit}>Submit</Button>
     </>
   );
 };

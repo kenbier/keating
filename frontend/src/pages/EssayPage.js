@@ -4,8 +4,6 @@ import IELTSForm from '../components/IELTSForm';
 import styled from 'styled-components';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { DEV_FORM_DATA, EMPTY_FORM_DATA } from '../constants';
 
 
 // Container for the entire form
@@ -49,75 +47,28 @@ const ComingSoonText = styled.p`
   font-weight: bold;
   color: #e74c3c;
 `;
-
 const EssayPage = ({ onSuccess }) => {
-  const initialFormData = process.env.REACT_APP_MODE === 'dev' ? DEV_FORM_DATA : EMPTY_FORM_DATA;
-  const [formData, setFormData] = useState(initialFormData);
 
-  const navigate = useNavigate();
+  const initialExamType = 'IELTS'
+  const [examType, setExamType] = useState(initialExamType);
+
+  const handleInputChange = (event) => {
+    setExamType(event.target.value);
+  };
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const isEmptyString = value => typeof value === 'string' && value.trim() === '';
-  const hasEmptyStrings = Object.values(formData).some(isEmptyString);
-  const canSubmit = !hasEmptyStrings;
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-
-    const apiUrl = `${process.env.REACT_APP_API_URL}`;
-
-    // Your form submission logic
-    // Example: Fetch POST request to the backend with form data
-    fetch(apiUrl + "/grade", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-    .then((response) => {
-      if (!response.ok) {
-        // If the server response is not OK, throw an error with the status text
-        return response.json().then(err => {
-          throw new Error(err.message || `HTTP error: ${response.statusText}`);
-        });
-      }
-      return response.json();
-    })
-    .then((data) => {
-      setIsLoading(false);
-      onSuccess(data);
-      navigate("/graded");
-    })
-    .catch((error) => {
-      setIsLoading(false);
-      // Display the error message via toast
-      toast.error(`Error: ${error.message}`, {
-        autoClose: 5000,
-        closeOnClick: true,
-        draggable: true,
-      });
-    });
-  };
 
   return (
     <EssayFormContainer>
       {isLoading ? (
         <LoadingIndicator />
       ) : (
-        <form onSubmit={handleFormSubmit}>
+        <>
+        <form>
           <FormLabel htmlFor="examType">Exam Type</FormLabel>
           <ExamType
             name="examType"
-            value={formData.examType}
+            value={examType}
             onChange={handleInputChange}
           >
             <option value="">Select Exam Type</option>
@@ -131,17 +82,17 @@ const EssayPage = ({ onSuccess }) => {
             <option value="IELCA">IELCA</option>
             <option value="Other">Other</option>
           </ExamType>
-
-          {formData.examType === 'IELTS' ? (
+        </form>
+          {examType === 'IELTS' ? (
             <IELTSForm
-              onInputChange={handleInputChange}
-              essayData={formData}
-              canSubmit={canSubmit}
+              examType={examType}
+              setIsLoading={setIsLoading}
+              onSuccess={onSuccess}
             />
           ) : (
             <ComingSoonText>Coming soon!</ComingSoonText>
           )}
-        </form>
+        </>
       )}
     </EssayFormContainer>
   );

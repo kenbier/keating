@@ -6,7 +6,9 @@ def ask_openai(client, messages):
     try:
         response = client.chat.completions.create(
             model=current_model,
-            messages=messages
+            messages=messages,
+            temperature=0.3,
+            top_p=0.7
         )
         return response
     except Exception as e:
@@ -23,6 +25,7 @@ def grade_text(client, question_type, question, essay, test_type="IELTS"):
         messages.append({"role": "assistant", "content": grade_response})
         messages.append(additional_feedback_message)
         response = ask_openai(client, messages)
+
         if 'error' in response:
             return response['error']
 

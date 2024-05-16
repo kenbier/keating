@@ -29,7 +29,7 @@ def generate_user_message_for_grading(test_type, question_type, question, essay)
 
 additional_feedback_message = {"role": "user", "content": "Provide grammar topics to study based on the essay the user submitted. \
                      Next, print places in the essay with very obvious grammatical mistakes, and explain how to fix them. \
-                               Make sure the edited sentence is not the same as the original, and put the edited words of the corrected sentence in all caps. \
+                     Make sure the edited sentence is not the same as the original.\
                      Finally generate 5 basic multiple choice grammar questions based on the grammar topics you chose.\
                      "}
 

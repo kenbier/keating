@@ -1,7 +1,6 @@
 // src/constants.js
 
-export const DEV_FORM_DATA = {
-    examType: 'IELTS',
+export const IELTS_DEV_FORM_DATA = {
     questionType: 'Question 2',
     question: 'Young people are leaving their homes in rural areas to work or study in cities. What are the reasons? Do the advantages of this development outweigh the drawbacks?',
     essay: `The comparison of standards of the cities and small town or villages has been always a debate. Recently, teenagers choose to live in the cities rather than their home villages because of school or job opportunities. This essay will discuss multiple reasons behind this trend and explain why the advantages of being in a city do indeed outweigh its drawbacks.
@@ -13,8 +12,7 @@ export const DEV_FORM_DATA = {
   To conclude, there are various reasons for young generation to leave their homes to live in the cities and this movement’s benefits easily outweigh its disadvantages.`
   };
 
-  export const EMPTY_FORM_DATA = {
-    examType: 'IELTS',
+  export const IELTS_EMPTY_FORM_DATA = {
     questionType: '',
     question: '',
     essay: ''

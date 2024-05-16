@@ -1,6 +1,9 @@
 // IELTSForm.js
-import React from 'react';
+import React, { useState, useEffect} from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { IELTS_DEV_FORM_DATA, IELTS_EMPTY_FORM_DATA } from '../constants';
 
 // Define styled components
 const Fieldset = styled.fieldset`
@@ -63,14 +66,89 @@ const Button = styled.button`
   }
 `;
 
-const IELTSForm = ({ onInputChange, essayData, canSubmit }) => {
+const IELTSForm = ({ examType, setIsLoading, onSuccess }) => {
+    const navigate = useNavigate();
+    const initialFormData = process.env.REACT_APP_MODE === 'dev' ? IELTS_DEV_FORM_DATA : IELTS_EMPTY_FORM_DATA;
+
+    const validateAndLoadFormData = () => {
+        const savedData = localStorage.getItem('ieltsFormData');
+        if (!savedData) return initialFormData;
+
+        const parsedData = JSON.parse(savedData);
+        const requiredKeys = ['questionType', 'question', 'essay'];
+        const isValid = requiredKeys.every(key => key in parsedData && parsedData[key].trim() !== '');
+
+        return isValid ? parsedData : initialFormData;
+    };
+
+    const [formData, setFormData] = useState(validateAndLoadFormData);
+
+    // UseEffect to update localStorage when formData changes
+    useEffect(() => {
+        localStorage.setItem('ieltsFormData', JSON.stringify(formData));
+    }, [formData]);
+
+
+    const onInputChange = (event) => {
+        const { name, value } = event.target;
+        setFormData(prevData => ({
+          ...prevData,
+          [name]: value
+        }));
+      };
+
+    const isEmptyString = value => typeof value === 'string' && value.trim() === '';
+    const hasEmptyStrings = Object.values(formData).some(isEmptyString);
+    const canSubmit = !hasEmptyStrings;
+
+    const handleFormSubmit = (e) => {
+        formData['examType'] = examType
+        e.preventDefault();
+        setIsLoading(true);
+
+        const apiUrl = `${process.env.REACT_APP_API_URL}`;
+
+        // Your form submission logic
+        // Example: Fetch POST request to the backend with form data
+        fetch(apiUrl + "/grade", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+        })
+        .then((response) => {
+        if (!response.ok) {
+            // If the server response is not OK, throw an error with the status text
+            return response.json().then(err => {
+            throw new Error(err.message || `HTTP error: ${response.statusText}`);
+            });
+        }
+        return response.json();
+        })
+        .then((data) => {
+        setIsLoading(false);
+        onSuccess(data);
+        navigate("/graded");
+        })
+        .catch((error) => {
+        setIsLoading(false);
+        // Display the error message via toast
+        toast.error(`Error: ${error.message}`, {
+            autoClose: 5000,
+            closeOnClick: true,
+            draggable: true,
+        });
+        });
+    };
   return (
     <>
+      <form onSubmit={handleFormSubmit}>
       <Fieldset>
         <Label htmlFor="questionType">Question Type</Label>
         <Select
           name="questionType"
-          value={essayData.questionType}
+          value={formData.questionType}
           onChange={onInputChange}
         >
           <option value="">Select Type</option>
@@ -84,7 +162,7 @@ const IELTSForm = ({ onInputChange, essayData, canSubmit }) => {
         <Input
           type="text"
           name="question"
-          value={essayData.question}
+          value={formData.question}
           onChange={onInputChange}
           required
         />
@@ -95,14 +173,13 @@ const IELTSForm = ({ onInputChange, essayData, canSubmit }) => {
         <Textarea
           name="essay"
           rows="10"
-          value={essayData.essay}
+          value={formData.essay}
           onChange={onInputChange}
           required
         />
       </Fieldset>
-
-
       <Button type="submit" disabled={!canSubmit}>Submit</Button>
+      </form>
     </>
   );
 };

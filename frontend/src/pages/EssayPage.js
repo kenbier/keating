@@ -3,21 +3,23 @@ import React, { useState } from 'react';
 import IELTSForm from '../components/IELTSForm';
 import styled from 'styled-components';
 import LoadingIndicator from '../components/LoadingIndicator';
-import { useNavigate } from 'react-router-dom';
 
 
 // Container for the entire form
+
 const EssayFormContainer = styled.div`
   width: 80%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
+  margin: auto;
   padding: 20px;
   text-align: center;
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  height: 100%;  /* This ensures the form uses the entire height of its container */
+
+  padding: 20px; /* Add padding around the content */
+  max-height: 80vh; /* Set maximum height to 100% of the viewport height */
+  overflow-y: auto; /* Enable scrolling inside the container if content overflows */
+  margin-top: 60px; /* Add space on the top to avoid overlap with the header */
 
 `;
 

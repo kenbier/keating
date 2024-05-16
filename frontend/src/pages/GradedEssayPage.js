@@ -13,7 +13,7 @@ const Container = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
   padding: 20px; /* Add padding around the content */
-  max-height: 80vh; /* Set maximum height to 100% of the viewport height */
+  max-height: 70vh; /* Set maximum height to 100% of the viewport height */
   overflow-y: auto; /* Enable scrolling inside the container if content overflows */
   margin-top: 60px; /* Add space on the top to avoid overlap with the header */
 

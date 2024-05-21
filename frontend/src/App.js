@@ -10,11 +10,52 @@ import { useAuth0 } from '@auth0/auth0-react';
 import React, { useState, useEffect } from 'react';
 import LoadingPage from './pages/LoadingPage';
 import ErrorPopup from './components/ErrorPopup';
+import {trackEvent} from './util.js';
 
 
 const App = () => {
-  const { isAuthenticated, isLoading } = useAuth0();
+  const { isAuthenticated, isLoading, user, getIdTokenClaims} = useAuth0();
   const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    const trackUserEvent = async () => {
+      if (isAuthenticated && user) {
+        const claims = await getIdTokenClaims();
+        const isSignup = claims['https://trykeating.com/signup'];
+
+        const eventData = {
+          event_name: isSignup ? 'Signup' : 'Login',
+          event_time: Math.floor(Date.now() / 1000),
+          event_source_url: window.location.href,
+          user_data: {
+            em: user.email,
+            client_user_agent: navigator.userAgent
+          },
+        };
+        trackEvent(eventData);
+      }
+    };
+    trackUserEvent();
+  }, [isAuthenticated, user, getIdTokenClaims]);
+
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const eventData = {
+        event_name: 'Login',
+        event_time: Math.floor(Date.now() / 1000),
+        action_source: 'website',
+        event_source_url: window.location.href,
+        user_data: {
+            em: user.email,
+            client_user_agent: navigator.userAgent
+        },
+    };
+      trackEvent(eventData);
+    }
+  }, [isAuthenticated, user]);
+
 
   // State to store the graded essay
   const [gradedEssay, setGradedEssay] = React.useState(null);

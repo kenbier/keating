@@ -9,7 +9,7 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
-  const { loginWithRedirect } = useAuth0();
+  const { logout } = useAuth0();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const toggleDrawer = (open) => () => {
@@ -19,7 +19,7 @@ const LoginPage = () => {
   const drawerItems = [
     { text: 'Grade Essay', icon: <DescriptionIcon/>, path: '/' },
     { text: 'About', icon: <InfoIcon /> , path: "/about" },
-    { text: 'Logout', icon: <ExitToAppIcon />, action: loginWithRedirect }
+    { text: 'Logout', icon: <ExitToAppIcon />, action: () => logout({ returnTo: window.location.origin })}
   ];
 
   const StyledListItemText = styled(ListItemText)(({ theme }) => ({

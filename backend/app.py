@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory, g, abort
+from flask import Flask, jsonify, send_from_directory, g, request
 from dotenv import load_dotenv
 import os
 from routes.grade import grade_text
@@ -10,8 +10,9 @@ from flask_limiter.util import get_remote_address
 from flask import g
 import logging
 import os
-from helpers.util import is_dev, configure_logging, is_prod
+from helpers.util import is_dev, configure_logging, is_prod, hash_sha256
 from helpers.middleware import apply_snake_case_middleware, conditional_limiter
+import requests
 
 def create_app():
     # import language_tool_python
@@ -46,9 +47,15 @@ def create_app():
         configure_logging(logging.WARNING)
         app.logger.info("prod mode enabled")
 
+
+    meta_token = os.getenv('META_TOKEN')
+    meta_pixel = os.getenv('META_PIXEL')
+
     ## Add things to the app object
     app.openai_client = client
     app.limiter = limiter
+    app.meta_token = meta_token
+    app.meta_pixel = meta_pixel
     return app
 
 load_dotenv()
@@ -74,6 +81,22 @@ def handle_500(error):
     })
     response.status_code = 500
     return response
+
+@app.route('/track', methods=['POST'])
+def track_event():
+    data = g.json_data
+    em = data['user_data']['em']
+    data['user_data']['em'] = hash_sha256(em)
+    data['user_data']['client_ip_address'] = request.remote_addr  # Capture the IP address
+    pixel = app.meta_pixel
+    response = requests.post(
+        f'https://graph.facebook.com/v12.0/{pixel}/events',
+        json={
+            'data': [data],
+            'access_token': app.meta_token
+        }
+    )
+    return jsonify(response.json()), response.status_code
 
 @app.route('/grade', methods=['POST'])
 @conditional_limiter(app.limiter, "10 per hour")

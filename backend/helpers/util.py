@@ -1,6 +1,7 @@
 import re
 import os
 import logging
+import hashlib
 
 def camel_to_snake(name):
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
@@ -43,3 +44,7 @@ def is_dev():
 
 def configure_logging(logging_level):
     logging.basicConfig(level=logging_level, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def hash_sha256(data):
+    """Hash the given data using SHA256 and return the hexadecimal representation."""
+    return hashlib.sha256(data.encode()).hexdigest()

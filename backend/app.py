@@ -13,9 +13,6 @@ import os
 from helpers.util import is_dev, configure_logging, is_prod, hash_sha256
 from helpers.middleware import apply_snake_case_middleware, conditional_limiter
 import requests
-
-import language_tool_python
-
 from gramformer import Gramformer
 import torch
 import difflib
@@ -71,10 +68,6 @@ def create_app():
     app.limiter = limiter
     app.meta_token = meta_token
     app.meta_pixel = meta_pixel
-
-    app.tool = language_tool_python.LanguageTool('en-US')
-    app.tool.disable_spellchecking()
-    app.tool.disabled_rules = ['WHITESPACE_RULE']
 
     set_seed(1212)
     app.gf = Gramformer(models = 1, use_gpu=False) # 1=corrector, 2=detector
@@ -200,6 +193,24 @@ def fix_essay_with_gramformer(gf, original_text):
     return (corrected_text, explanations)
 
 
+@app.route('/correct', methods=['POST'])
+@conditional_limiter(app.limiter, "10 per hour")
+def correct():
+    data = g.json_data
+    essay = data['essay']
+
+    try:
+        responses = fix_essay_with_gramformer(app.gf, essay)
+    except Exception as e:
+        responses = essay, "Error, try again later."
+
+    if isinstance(responses, tuple):
+        corrected_text, explanations = responses
+        return jsonify(corrected=corrected_text, explanations=explanations)
+    else:
+        return jsonify(error=responses), 400
+
+
 @app.route('/grade', methods=['POST'])
 @conditional_limiter(app.limiter, "10 per hour")
 def grade():
@@ -209,15 +220,10 @@ def grade():
     question = data['question']
 
     responses = grade_text(app.openai_client, question_type, question_type, question, essay)
-    try:
-        corrected_text, explanations = fix_essay(app.tool, essay)
-        ##corrected_text, explanations = fix_essay_with_gramformer(app.gf, essay)
-    except Exception as e:
-        corrected_text, explanations = essay, "Error, try again later."
 
     if isinstance(responses, tuple):
         grade_response, questions_response = responses
-        return jsonify(score=grade_response, questions=questions_response, corrected=corrected_text, explanations=explanations, original=essay)
+        return jsonify(score=grade_response, questions=questions_response, original=essay)
     else:
         return jsonify(error=responses), 400
 

@@ -1,6 +1,22 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
+import styled, {keyframes} from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+
+// Define the spin keyframes
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+// Define the Spinner styled component
+const Spinner = styled.div`
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: ${spin} 2s linear infinite;
+`;
 
 // Define styled components
 const Container = styled.div`
@@ -57,7 +73,7 @@ const Button = styled.button`
     background-color: #4b55c3;
   }
 `;
-
+/*
 // Functional component
 const GradedEssayPage = ({ gradedEssay }) => {
   const navigate = useNavigate();
@@ -77,7 +93,6 @@ const GradedEssayPage = ({ gradedEssay }) => {
     return null; // Temporarily render nothing until redirect completes
   }
 
-/*
   return (
     <div>
     <Container>
@@ -115,48 +130,100 @@ const GradedEssayPage = ({ gradedEssay }) => {
     </div>
   );
 };
-*/
+ */
 
+const GradedEssayPage = ({ gradedEssay }) => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [detailedGradedEssay, setDetailedGradedEssay] = useState(null);
+
+  useEffect(() => {
+    if (!gradedEssay) {
+      navigate('/');
+      return;
+    }
+    const fetchDetailedGradedEssay = async () => {
+      try {
+        const response = await fetch('/correct', {  // Adjust the URL as needed
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ essay: gradedEssay.original })
+        });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setDetailedGradedEssay(data);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDetailedGradedEssay();
+  }, [gradedEssay, navigate]);
+
+  const handleTryAgain = () => {
+    navigate('/');
+  };
+
+  if (!gradedEssay) {
+    return null; // Temporarily render nothing until redirect completes
+  }
 
   return (
     <div>
-    <Container>
-      <Section>
-        <SectionTitle>Score</SectionTitle>
-        <TextDiv><pre>{gradedEssay.score}</pre></TextDiv>
-      </Section>
+      <Container>
+        <Section>
+          <SectionTitle>Score</SectionTitle>
+          <TextDiv><pre>{gradedEssay.score}</pre></TextDiv>
+        </Section>
 
-      <Section>
-        <SectionTitle> Sample edits and suggestions (Experimental)</SectionTitle>
-        <TextDiv><pre>{gradedEssay.questions}</pre></TextDiv>
-      </Section>
-
-      <Section>
+        <Section>
           <SectionTitle>Original Essay</SectionTitle>
           <TextDiv><pre>{gradedEssay.original}</pre></TextDiv>
         </Section>
 
         <Section>
-          <SectionTitle>Corrected Essay</SectionTitle>
-          <TextDiv dangerouslySetInnerHTML={{ __html: gradedEssay.corrected }}></TextDiv>
+          <SectionTitle>Sample edits and suggestions (Experimental)</SectionTitle>
+          <TextDiv><pre>{gradedEssay.questions}</pre></TextDiv>
         </Section>
 
+        {loading ? (
+          <Section>
+            <SectionTitle>Loading, can take some time...</SectionTitle>
+            <Spinner />
+            <TextDiv>Loading corrected essay and explanations...</TextDiv>
+          </Section>
+        ) : error ? (
+          <Section>
+            <SectionTitle>Error</SectionTitle>
+            <TextDiv>Error: {error.message}</TextDiv>
+          </Section>
+        ) : (
+          <>
+            <Section>
+              <SectionTitle>Corrected Essay</SectionTitle>
+              <TextDiv dangerouslySetInnerHTML={{ __html: detailedGradedEssay.corrected }}></TextDiv>
+            </Section>
 
-      <Section>
-          <SectionTitle>Grammar Corrections and Explanations</SectionTitle>
-          <ul>
-            {gradedEssay.explanations.map((exp, index) => (
-              <li key={index}>
-                <b>Original:</b> {exp.original} <br />
-                <b>Correction:</b> {exp.correction.join(', ')} <br />
-                <b>Explanation:</b> {exp.explanation}
-              </li>
-            ))}
-          </ul>
-        </Section>
+            <Section>
+              <SectionTitle>Grammar Corrections and Explanations</SectionTitle>
+              <ul>
+                {detailedGradedEssay.explanations.map((exp, index) => (
+                  <li key={index} dangerouslySetInnerHTML={{ __html: exp }} />
+                ))}
+              </ul>
+            </Section>
+          </>
+        )}
 
-    </Container>
-    <Button onClick={handleTryAgain}>Try Again</Button>
+
+      </Container>
+      <Button onClick={handleTryAgain}>Try Again</Button>
     </div>
   );
 };

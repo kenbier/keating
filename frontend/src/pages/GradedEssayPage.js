@@ -86,6 +86,25 @@ const GradedEssayPage = ({ gradedEssay }) => {
       </Section>
 
       <Section>
+          <SectionTitle>Original Essay</SectionTitle>
+          <TextDiv><pre>{gradedEssay.original}</pre></TextDiv>
+        </Section>
+
+        <Section>
+          <SectionTitle>Corrected Essay</SectionTitle>
+          <TextDiv dangerouslySetInnerHTML={{ __html: gradedEssay.corrected}}></TextDiv>
+        </Section>
+
+      <Section>
+          <SectionTitle>Grammar Corrections and Explanations</SectionTitle>
+          <ul>
+            {gradedEssay.explanations.map((exp, index) => (
+              <li key={index} dangerouslySetInnerHTML={{ __html: exp}} />
+            ))}
+          </ul>
+        </Section>
+
+      <Section>
         <SectionTitle> Sample edits and suggestions (Experimental)</SectionTitle>
         <TextDiv><pre>{gradedEssay.questions}</pre></TextDiv>
       </Section>
@@ -97,3 +116,49 @@ const GradedEssayPage = ({ gradedEssay }) => {
 };
 
 export default GradedEssayPage;
+
+
+/*
+  return (
+    <div>
+    <Container>
+      <Section>
+        <SectionTitle>Score</SectionTitle>
+        <TextDiv><pre>{gradedEssay.score}</pre></TextDiv>
+      </Section>
+
+      <Section>
+        <SectionTitle> Sample edits and suggestions (Experimental)</SectionTitle>
+        <TextDiv><pre>{gradedEssay.questions}</pre></TextDiv>
+      </Section>
+
+      <Section>
+          <SectionTitle>Original Essay</SectionTitle>
+          <TextDiv><pre>{gradedEssay.original}</pre></TextDiv>
+        </Section>
+
+        <Section>
+          <SectionTitle>Corrected Essay</SectionTitle>
+          <TextDiv dangerouslySetInnerHTML={{ __html: gradedEssay.corrected }}></TextDiv>
+        </Section>
+
+
+      <Section>
+          <SectionTitle>Grammar Corrections and Explanations</SectionTitle>
+          <ul>
+            {gradedEssay.explanations.map((exp, index) => (
+              <li key={index}>
+                <b>Original:</b> {exp.original} <br />
+                <b>Correction:</b> {exp.correction.join(', ')} <br />
+                <b>Explanation:</b> {exp.explanation}
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+    </Container>
+    <Button onClick={handleTryAgain}>Try Again</Button>
+    </div>
+  );
+};
+*/

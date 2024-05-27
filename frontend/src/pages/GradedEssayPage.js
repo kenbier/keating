@@ -77,6 +77,7 @@ const GradedEssayPage = ({ gradedEssay }) => {
     return null; // Temporarily render nothing until redirect completes
   }
 
+/*
   return (
     <div>
     <Container>
@@ -114,11 +115,9 @@ const GradedEssayPage = ({ gradedEssay }) => {
     </div>
   );
 };
+*/
 
-export default GradedEssayPage;
 
-
-/*
   return (
     <div>
     <Container>
@@ -161,4 +160,5 @@ export default GradedEssayPage;
     </div>
   );
 };
-*/
+
+export default GradedEssayPage;

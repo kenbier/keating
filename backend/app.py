@@ -191,7 +191,7 @@ def fix_essay_with_gramformer(gf, original_text):
 
             # Join the corrected (and highlighted) sentences
             corrected_paragraph = ' '.join(corrected_sentences)
-            corrected_paragraphs.append(f"<p>{corrected_paragraph}</p>")
+            corrected_paragraphs.append(f"<p>{corrected_paragraph}</p><p><br></br></p>")
         else:
             corrected_paragraphs.append("<p><br><br></p>")  # Add empty paragraphs to maintain structure
 
@@ -210,8 +210,8 @@ def grade():
 
     responses = grade_text(app.openai_client, question_type, question_type, question, essay)
     try:
-        ## corrected_text, explanations = fix_essay(app.tool, essay)
-        corrected_text, explanations = fix_essay_with_gramformer(app.gf, essay)
+        corrected_text, explanations = fix_essay(app.tool, essay)
+        ##corrected_text, explanations = fix_essay_with_gramformer(app.gf, essay)
     except Exception as e:
         corrected_text, explanations = essay, "Error, try again later."
 

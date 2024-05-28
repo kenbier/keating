@@ -126,7 +126,7 @@ const GradedEssayPage = ({ gradedEssay }) => {
 
         {loading ? (
           <Section>
-            <SectionTitle>Loading fully edited essay, can take some time...</SectionTitle>
+            <SectionTitle>Loading fully edited essay, can take up to a minute...</SectionTitle>
             <Spinner />
             <TextDiv>Loading corrected essay and explanations...</TextDiv>
           </Section>

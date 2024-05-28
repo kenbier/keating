@@ -73,64 +73,6 @@ const Button = styled.button`
     background-color: #4b55c3;
   }
 `;
-/*
-// Functional component
-const GradedEssayPage = ({ gradedEssay }) => {
-  const navigate = useNavigate();
-
-  // Redirect if gradedEssay is null
-  useEffect(() => {
-    if (!gradedEssay) {
-      navigate('/');
-    }
-  }, [gradedEssay, navigate]);
-
-  const handleTryAgain = () => {
-    navigate('/');
-  };
-
-  if (!gradedEssay) {
-    return null; // Temporarily render nothing until redirect completes
-  }
-
-  return (
-    <div>
-    <Container>
-      <Section>
-        <SectionTitle>Score</SectionTitle>
-        <TextDiv><pre>{gradedEssay.score}</pre></TextDiv>
-      </Section>
-
-      <Section>
-          <SectionTitle>Original Essay</SectionTitle>
-          <TextDiv><pre>{gradedEssay.original}</pre></TextDiv>
-        </Section>
-
-        <Section>
-          <SectionTitle>Corrected Essay</SectionTitle>
-          <TextDiv dangerouslySetInnerHTML={{ __html: gradedEssay.corrected}}></TextDiv>
-        </Section>
-
-      <Section>
-          <SectionTitle>Grammar Corrections and Explanations</SectionTitle>
-          <ul>
-            {gradedEssay.explanations.map((exp, index) => (
-              <li key={index} dangerouslySetInnerHTML={{ __html: exp}} />
-            ))}
-          </ul>
-        </Section>
-
-      <Section>
-        <SectionTitle> Sample edits and suggestions (Experimental)</SectionTitle>
-        <TextDiv><pre>{gradedEssay.questions}</pre></TextDiv>
-      </Section>
-
-    </Container>
-    <Button onClick={handleTryAgain}>Try Again</Button>
-    </div>
-  );
-};
- */
 
 const GradedEssayPage = ({ gradedEssay }) => {
   const navigate = useNavigate();
@@ -182,25 +124,15 @@ const GradedEssayPage = ({ gradedEssay }) => {
           <TextDiv><pre>{gradedEssay.score}</pre></TextDiv>
         </Section>
 
-        <Section>
-          <SectionTitle>Original Essay</SectionTitle>
-          <TextDiv><pre>{gradedEssay.original}</pre></TextDiv>
-        </Section>
-
-        <Section>
-          <SectionTitle>Sample edits and suggestions (Experimental)</SectionTitle>
-          <TextDiv><pre>{gradedEssay.questions}</pre></TextDiv>
-        </Section>
-
         {loading ? (
           <Section>
-            <SectionTitle>Loading, can take some time...</SectionTitle>
+            <SectionTitle>Loading fully edited essay, can take some time...</SectionTitle>
             <Spinner />
             <TextDiv>Loading corrected essay and explanations...</TextDiv>
           </Section>
         ) : error ? (
           <Section>
-            <SectionTitle>Error</SectionTitle>
+            <SectionTitle>Edited Essay</SectionTitle>
             <TextDiv>Error: {error.message}</TextDiv>
           </Section>
         ) : (
@@ -209,20 +141,15 @@ const GradedEssayPage = ({ gradedEssay }) => {
               <SectionTitle>Corrected Essay</SectionTitle>
               <TextDiv dangerouslySetInnerHTML={{ __html: detailedGradedEssay.corrected }}></TextDiv>
             </Section>
-
-            <Section>
-              <SectionTitle>Grammar Corrections and Explanations</SectionTitle>
-              <ul>
-                {detailedGradedEssay.explanations.map((exp, index) => (
-                  <li key={index} dangerouslySetInnerHTML={{ __html: exp }} />
-                ))}
-              </ul>
-            </Section>
           </>
         )}
 
-
+        <Section>
+          <SectionTitle>Sample suggestions and study material (Experimental)</SectionTitle>
+          <TextDiv><pre>{gradedEssay.questions}</pre></TextDiv>
+        </Section>
       </Container>
+
       <Button onClick={handleTryAgain}>Try Again</Button>
     </div>
   );

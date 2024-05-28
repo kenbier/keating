@@ -13,7 +13,9 @@ import os
 from helpers.util import is_dev, configure_logging, is_prod, hash_sha256
 from helpers.middleware import apply_snake_case_middleware, conditional_limiter
 import requests
-from gramformer import Gramformer
+
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from torch.quantization import quantize_dynamic
 import torch
 import difflib
 import spacy
@@ -24,7 +26,6 @@ def set_seed(seed):
   torch.manual_seed(seed)
   if torch.cuda.is_available():
     torch.cuda.manual_seed_all(seed)
-
 
 def create_app():
     # import language_tool_python
@@ -70,7 +71,20 @@ def create_app():
     app.meta_pixel = meta_pixel
 
     set_seed(1212)
-    app.gf = Gramformer(models = 1, use_gpu=False) # 1=corrector, 2=detector
+
+    # Load the model and tokenizer
+    model_name = "prithivida/grammar_error_correcter_v1"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+
+    # Apply dynamic quantization to the model
+    model = quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
+    device = torch.device("cpu")
+    model.to(device)
+
+    app.device = device
+    app.tokenizer = tokenizer
+    app.gf = model
     return app
 
 load_dotenv()
@@ -145,10 +159,10 @@ def fix_essay(tool, essay):
 
     return (corrected_text, explanations)
 
-def fix_essay_with_gramformer(gf, original_text):
+def fix_essay_with_gramformer(model, tokenizer, device, original_text):
     paragraphs = original_text.split('\n\n')
     corrected_paragraphs = []
-    explanations = []
+
     for paragraph in paragraphs:
         if paragraph.strip():  # Ensure the paragraph is not just whitespace
             sentences = paragraph.split('. ')
@@ -158,11 +172,14 @@ def fix_essay_with_gramformer(gf, original_text):
                 if not sentence.endswith('.'):
                     sentence += '.'
                 original_sentence = sentence
-                corrected = list(gf.correct(sentence, max_candidates=1))
-                corrected_sentence = corrected[0] if corrected else sentence
 
-                # Append the corrected sentence
-                corrected_sentences.append(corrected_sentence)
+                # Tokenize the sentence
+                inputs = tokenizer.encode("gec: " + original_sentence, return_tensors="pt", padding=True, truncation=True).to(device)
+
+                # Perform inference
+                with torch.no_grad():
+                    outputs = model.generate(inputs, max_length=512, num_beams=5, early_stopping=True)
+                corrected_sentence = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
                 # Generate explanations and apply highlighting
                 s = difflib.SequenceMatcher(None, original_sentence, corrected_sentence)
@@ -172,15 +189,13 @@ def fix_essay_with_gramformer(gf, original_text):
                         highlighted_sentence += corrected_sentence[j1:j2]
                     elif tag == 'replace':
                         highlighted_sentence += f"<strong><u>{corrected_sentence[j1:j2]}</u></strong>"
-                        explanations.append(f"<strong>Changed</strong> from '{original_sentence[i1:i2]}' to '<strong>{corrected_sentence[j1:j2]}</strong>'")
                     elif tag == 'insert':
                         highlighted_sentence += f"<strong><u>{corrected_sentence[j1:j2]}</u></strong>"
-                        explanations.append(f"<strong>Added</strong> '{corrected_sentence[j1:j2]}'")
                     elif tag == 'delete':
-                        explanations.append(f"<strong>Deleted</strong> '{original_sentence[i1:i2]}'")
+                        highlighted_sentence += f"<strong><del>{original_sentence[i1:i2]}</del></strong>"
 
                 # Replace the original corrected sentence with the highlighted version
-                corrected_sentences[-1] = highlighted_sentence
+                corrected_sentences.append(highlighted_sentence)
 
             # Join the corrected (and highlighted) sentences
             corrected_paragraph = ' '.join(corrected_sentences)
@@ -189,9 +204,8 @@ def fix_essay_with_gramformer(gf, original_text):
             corrected_paragraphs.append("<p><br><br></p>")  # Add empty paragraphs to maintain structure
 
     # Join corrected paragraphs back into a single text with highlights
-    corrected_text = '\n\n'.join(corrected_paragraphs)
-    return (corrected_text, explanations)
-
+    corrected_text = ''.join(corrected_paragraphs)
+    return corrected_text
 
 @app.route('/correct', methods=['POST'])
 @conditional_limiter(app.limiter, "10 per hour")
@@ -200,15 +214,11 @@ def correct():
     essay = data['essay']
 
     try:
-        responses = fix_essay_with_gramformer(app.gf, essay)
+        corrected_text = fix_essay_with_gramformer(app.gf, app.tokenizer, app.device, essay)
+        return jsonify(corrected=corrected_text)
     except Exception as e:
-        responses = essay, "Error, try again later."
+        return jsonify(error="Error, try again later"), 400
 
-    if isinstance(responses, tuple):
-        corrected_text, explanations = responses
-        return jsonify(corrected=corrected_text, explanations=explanations)
-    else:
-        return jsonify(error=responses), 400
 
 
 @app.route('/grade', methods=['POST'])
@@ -223,6 +233,7 @@ def grade():
 
     if isinstance(responses, tuple):
         grade_response, questions_response = responses
+        ## TODO stop sending the essay back and pass it down via props
         return jsonify(score=grade_response, questions=questions_response, original=essay)
     else:
         return jsonify(error=responses), 400
